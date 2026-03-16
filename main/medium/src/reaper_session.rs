@@ -13,11 +13,11 @@ use crate::{
     AcceleratorPosition, BufferingBehavior, CommandId, ControlSurface, ControlSurfaceAdapter,
     FileInProjectCallback, GenericRegistrationHandle, Handle, HookCommand, HookCommand2,
     HookCustomMenu, HookPostCommand, HookPostCommand2, HwndInfo, MainThreadScope, MeasureAlignment,
-    OnAudioBuffer, OwnedAcceleratorRegister, OwnedAudioHookRegister, OwnedGaccelRegister,
-    OwnedCustomActionRegister, OwnedPreviewRegister, PluginRegistration, ProjectContext, ReaProject,
+    OnAudioBuffer, OwnedAcceleratorRegister, OwnedAudioHookRegister, OwnedCustomActionRegister,
+    OwnedGaccelRegister, OwnedPreviewRegister, PluginRegistration, ProjectContext, ReaProject,
     RealTimeAudioThreadScope, Reaper, ReaperFunctionError, ReaperFunctionResult, ReaperMutex,
     ReaperString, ReaperStringArg, RegistrationHandle, RegistrationObject, ToggleAction,
- ToolbarIconMap, TranslateAccel,
+    ToolbarIconMap, TranslateAccel,
 };
 use reaper_low::raw::audio_hook_register_t;
 
@@ -1362,7 +1362,10 @@ impl ReaperSession {
     }
 
     /// Unregisters a custom action.
-    pub fn plugin_register_remove_custom_action(&mut self, handle: Handle<raw::custom_action_register_t>) {
+    pub fn plugin_register_remove_custom_action(
+        &mut self,
+        handle: Handle<raw::custom_action_register_t>,
+    ) {
         unsafe { self.plugin_register_remove(RegistrationObject::CustomAction(handle)) };
     }
 }

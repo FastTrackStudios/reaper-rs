@@ -1421,6 +1421,11 @@ pub mod root {
     }
     #[repr(C)]
     #[derive(Debug, Copy, Clone)]
+    pub struct ProjectMarker {
+        _unused: [u8; 0],
+    }
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
     pub struct MediaTrack {
         _unused: [u8; 0],
     }
@@ -9214,29 +9219,6 @@ pub mod root {
             >;
         }
         extern "C" {
-            #[link_name = "\u{1}_ZN16reaper_functions23AdvancePlaybackPositionE"]
-            pub static mut AdvancePlaybackPosition: ::std::option::Option<
-                unsafe extern "C" fn(
-                    __proj: *mut root::ReaProject,
-                    opos: f64,
-                    npos: *mut f64,
-                    loopcnt: *mut ::std::os::raw::c_longlong,
-                    srate: f64,
-                    max_spls: *mut ::std::os::raw::c_int,
-                    sf: *mut ::std::os::raw::c_int,
-                ) -> ::std::os::raw::c_int,
-            >;
-        }
-        extern "C" {
-            #[link_name = "\u{1}_ZN16reaper_functions14GetPlayLoopCntE"]
-            pub static mut GetPlayLoopCnt: ::std::option::Option<
-                unsafe extern "C" fn(
-                    __proj: *mut root::ReaProject,
-                    something: *mut ::std::os::raw::c_void,
-                ) -> ::std::os::raw::c_longlong,
-            >;
-        }
-        extern "C" {
             #[link_name = "\u{1}_ZN16reaper_functions16InitializeCoolSBE"]
             pub static mut InitializeCoolSB:
                 ::std::option::Option<unsafe extern "C" fn(hwnd: root::HWND) -> root::BOOL>;
@@ -9320,6 +9302,89 @@ pub mod root {
             #[link_name = "\u{1}_ZN16reaper_functions20CoolSB_SetThemeIndexE"]
             pub static mut CoolSB_SetThemeIndex: ::std::option::Option<
                 unsafe extern "C" fn(hwnd: root::HWND, idx: ::std::os::raw::c_int) -> root::BOOL,
+            >;
+        }
+        extern "C" {
+            #[link_name = "\u{1}_ZN16reaper_functions22GetNumRegionsOrMarkersE"]
+            pub static mut GetNumRegionsOrMarkers: ::std::option::Option<
+                unsafe extern "C" fn(proj: *mut root::ReaProject) -> ::std::os::raw::c_int,
+            >;
+        }
+        extern "C" {
+            #[link_name = "\u{1}_ZN16reaper_functions18GetRegionOrMarkerE"]
+            pub static mut GetRegionOrMarker: ::std::option::Option<
+                unsafe extern "C" fn(
+                    proj: *mut root::ReaProject,
+                    index: ::std::os::raw::c_int,
+                    guidStr: *const ::std::os::raw::c_char,
+                ) -> *mut root::ProjectMarker,
+            >;
+        }
+        extern "C" {
+            #[link_name = "\u{1}_ZN16reaper_functions28GetRegionOrMarkerInfo_ValueE"]
+            pub static mut GetRegionOrMarkerInfo_Value: ::std::option::Option<
+                unsafe extern "C" fn(
+                    proj: *mut root::ReaProject,
+                    regionOrMarker: *mut root::ProjectMarker,
+                    parameterName: *const ::std::os::raw::c_char,
+                ) -> f64,
+            >;
+        }
+        extern "C" {
+            #[link_name = "\u{1}_ZN16reaper_functions28SetRegionOrMarkerInfo_ValueE"]
+            pub static mut SetRegionOrMarkerInfo_Value: ::std::option::Option<
+                unsafe extern "C" fn(
+                    proj: *mut root::ReaProject,
+                    regionOrMarker: *mut root::ProjectMarker,
+                    parameterName: *const ::std::os::raw::c_char,
+                    setNewValue: f64,
+                ) -> f64,
+            >;
+        }
+        extern "C" {
+            #[link_name = "\u{1}_ZN16reaper_functions24GetSetRegionOrMarkerInfoE"]
+            pub static mut GetSetRegionOrMarkerInfo: ::std::option::Option<
+                unsafe extern "C" fn(
+                    proj: *mut root::ReaProject,
+                    regionOrMarker: *mut root::ProjectMarker,
+                    parameterName: *const ::std::os::raw::c_char,
+                    setNewValue: *mut ::std::os::raw::c_void,
+                ) -> *mut ::std::os::raw::c_void,
+            >;
+        }
+        extern "C" {
+            #[link_name = "\u{1}_ZN16reaper_functions31GetSetRegionOrMarkerInfo_StringE"]
+            pub static mut GetSetRegionOrMarkerInfo_String: ::std::option::Option<
+                unsafe extern "C" fn(
+                    proj: *mut root::ReaProject,
+                    regionOrMarker: *mut root::ProjectMarker,
+                    parameterName: *const ::std::os::raw::c_char,
+                    stringNeedBig: *mut ::std::os::raw::c_char,
+                    setNewValue: bool,
+                ) -> bool,
+            >;
+        }
+        extern "C" {
+            #[link_name = "\u{1}_ZN16reaper_functions25AdvancePlaybackPositionE"]
+            pub static mut AdvancePlaybackPosition: ::std::option::Option<
+                unsafe extern "C" fn(
+                    __proj: *mut root::ReaProject,
+                    opos: f64,
+                    npos: *mut f64,
+                    loopcnt: *mut ::std::os::raw::c_longlong,
+                    srate: f64,
+                    max_spls: *mut ::std::os::raw::c_int,
+                    sf: *mut ::std::os::raw::c_int,
+                ) -> ::std::os::raw::c_int,
+            >;
+        }
+        extern "C" {
+            #[link_name = "\u{1}_ZN16reaper_functions15GetPlayLoopCntE"]
+            pub static mut GetPlayLoopCnt: ::std::option::Option<
+                unsafe extern "C" fn(
+                    proj: *mut root::ReaProject,
+                    render_skip_loopcnt: *mut ::std::os::raw::c_longlong,
+                ) -> ::std::os::raw::c_longlong,
             >;
         }
     }

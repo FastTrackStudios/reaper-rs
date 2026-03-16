@@ -1,9 +1,9 @@
 use crate::{CrashHandler, CrashHandlerConfig, KeyBinding, KeyBindingKind, PluginInfo};
+use reaper_medium::OwnedCustomActionRegister;
 use std::cell::{Cell, RefCell, RefMut};
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::ffi::CString;
-use reaper_medium::OwnedCustomActionRegister;
 
 use std::rc::Rc;
 use std::sync::{Arc, OnceLock, Weak};
@@ -453,14 +453,14 @@ impl Reaper {
     }
 
     /// Registers an action in a specific section (e.g. MIDI editor, media explorer, etc.)
-    /// 
+    ///
     /// # Arguments
     /// * `command_name` - The unique command name for the action
     /// * `description` - The description shown in the action list
     /// * `section_id` - The section ID where the action should be registered (e.g. 32060 for MIDI editor)
     /// * `operation` - The function to execute when the action is triggered
     /// * `kind` - Whether the action is toggleable or not
-    /// 
+    ///
     /// # Returns
     /// A `RegisteredAction` that can be used to unregister the action later
     pub fn register_action_in_section(
@@ -473,17 +473,17 @@ impl Reaper {
     ) -> RegisteredAction {
         let reaper_main = self.reaper_main.get();
         let mut medium = self.medium_session();
-        
+
         // Convert command name to ReaperString once
         let cmd_name = command_name.clone().into().into_inner().to_reaper_string();
-        
+
         // Register the command ID
         let command_id = medium
             .plugin_register_add_command_id(command_name.clone())
             .unwrap();
-            
+
         let description = description.into().into_inner();
-        
+
         // Create the command
         let command = Command::new(
             cmd_name.clone(),
@@ -492,14 +492,14 @@ impl Reaper {
             description.to_reaper_string(),
             None, // No key binding for section-specific actions
         );
-        
+
         // Store the command
         if let Entry::Vacant(p) = reaper_main.command_by_id.borrow_mut().entry(command_id) {
             p.insert(command);
         }
-        
+
         let registered_action = RegisteredAction::new(command_id);
-        
+
         // Register the custom action in the specified section
         let id_str = CString::new(cmd_name.to_str()).unwrap();
         let action_register = OwnedCustomActionRegister::with_id_str(
@@ -507,17 +507,19 @@ impl Reaper {
             section_id,
             &id_str,
         );
-        
+
         // Register the custom action and store the handle
-        let handle = medium.plugin_register_custom_action(action_register).unwrap();
-        
+        let handle = medium
+            .plugin_register_custom_action(action_register)
+            .unwrap();
+
         // Store the registration if active
         let mut session_status = reaper_main.session_status.borrow_mut();
         if let SessionStatus::Awake(s) = session_status.deref_mut() {
             // We don't need to store the custom action handle since it's managed differently
             // than regular action handles
         }
-        
+
         registered_action
     }
 

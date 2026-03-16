@@ -44,20 +44,4 @@ bool (* GetCustomMenuOrToolbarItem)(const char* menuname,
     const char** strOutOptional,
     const char** iconFnOutOptional);
 
-// You can use this to step through times ahead of the current playback time, loopcnt will get updated on a loop or autoseek etc.
-//
-// double nextpos = old_pos;
-// INT64 lc = GetPlayLoopCnt(proj, NULL);
-// int ret = AdvancePlaybackPosition(proj, old_pos, &next_pos, &lc, 0.0 /* or srate */, NULL, NULL);
-// ret 1 if looped sel, 2 if looped project, 4 if loopendskip, 8 if smoothseek, 16 if fade audition (all during this block)
-// next_pos and lc updated so you can call again to look farther ahead
-int (* AdvancePlaybackPosition)(ReaProject* __proj,
-    double opos,
-    double* npos,
-    INT64* loopcnt,
-    double srate,
-    int* max_spls,
-    int* sf);
-
-// Not really sure what this does, but it should be used in combination with AdvancePlaybackPosition.
-INT64 (* GetPlayLoopCnt)(ReaProject* __proj, void* something);
+// AdvancePlaybackPosition and GetPlayLoopCnt were moved to the main reaper_plugin_functions.h in REAPER 7.63 SDK.

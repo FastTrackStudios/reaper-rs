@@ -3356,14 +3356,6 @@ impl Reaper {
                         c_str_macro::c_str!(stringify!(GetCustomMenuOrToolbarItem)).as_ptr(),
                     ),
                 ),
-                AdvancePlaybackPosition: std::mem::transmute(
-                    plugin_context
-                        .GetFunc(c_str_macro::c_str!(stringify!(AdvancePlaybackPosition)).as_ptr()),
-                ),
-                GetPlayLoopCnt: std::mem::transmute(
-                    plugin_context
-                        .GetFunc(c_str_macro::c_str!(stringify!(GetPlayLoopCnt)).as_ptr()),
-                ),
                 InitializeCoolSB: std::mem::transmute(
                     plugin_context
                         .GetFunc(c_str_macro::c_str!(stringify!(InitializeCoolSB)).as_ptr()),
@@ -3403,6 +3395,36 @@ impl Reaper {
                 CoolSB_SetThemeIndex: std::mem::transmute(
                     plugin_context
                         .GetFunc(c_str_macro::c_str!(stringify!(CoolSB_SetThemeIndex)).as_ptr()),
+                ),
+                GetNumRegionsOrMarkers: std::mem::transmute(
+                    plugin_context
+                        .GetFunc(c_str_macro::c_str!(stringify!(GetNumRegionsOrMarkers)).as_ptr()),
+                ),
+                GetRegionOrMarker: std::mem::transmute(
+                    plugin_context
+                        .GetFunc(c_str_macro::c_str!(stringify!(GetRegionOrMarker)).as_ptr()),
+                ),
+                GetRegionOrMarkerInfo_Value: std::mem::transmute(plugin_context.GetFunc(
+                    c_str_macro::c_str!(stringify!(GetRegionOrMarkerInfo_Value)).as_ptr(),
+                )),
+                SetRegionOrMarkerInfo_Value: std::mem::transmute(plugin_context.GetFunc(
+                    c_str_macro::c_str!(stringify!(SetRegionOrMarkerInfo_Value)).as_ptr(),
+                )),
+                GetSetRegionOrMarkerInfo: std::mem::transmute(
+                    plugin_context.GetFunc(
+                        c_str_macro::c_str!(stringify!(GetSetRegionOrMarkerInfo)).as_ptr(),
+                    ),
+                ),
+                GetSetRegionOrMarkerInfo_String: std::mem::transmute(plugin_context.GetFunc(
+                    c_str_macro::c_str!(stringify!(GetSetRegionOrMarkerInfo_String)).as_ptr(),
+                )),
+                AdvancePlaybackPosition: std::mem::transmute(
+                    plugin_context
+                        .GetFunc(c_str_macro::c_str!(stringify!(AdvancePlaybackPosition)).as_ptr()),
+                ),
+                GetPlayLoopCnt: std::mem::transmute(
+                    plugin_context
+                        .GetFunc(c_str_macro::c_str!(stringify!(GetPlayLoopCnt)).as_ptr()),
                 ),
             }
         };
@@ -5968,12 +5990,6 @@ impl Reaper {
         if pointers.GetCustomMenuOrToolbarItem.is_some() {
             loaded_count += 1;
         }
-        if pointers.AdvancePlaybackPosition.is_some() {
-            loaded_count += 1;
-        }
-        if pointers.GetPlayLoopCnt.is_some() {
-            loaded_count += 1;
-        }
         if pointers.InitializeCoolSB.is_some() {
             loaded_count += 1;
         }
@@ -6002,6 +6018,30 @@ impl Reaper {
             loaded_count += 1;
         }
         if pointers.CoolSB_SetThemeIndex.is_some() {
+            loaded_count += 1;
+        }
+        if pointers.GetNumRegionsOrMarkers.is_some() {
+            loaded_count += 1;
+        }
+        if pointers.GetRegionOrMarker.is_some() {
+            loaded_count += 1;
+        }
+        if pointers.GetRegionOrMarkerInfo_Value.is_some() {
+            loaded_count += 1;
+        }
+        if pointers.SetRegionOrMarkerInfo_Value.is_some() {
+            loaded_count += 1;
+        }
+        if pointers.GetSetRegionOrMarkerInfo.is_some() {
+            loaded_count += 1;
+        }
+        if pointers.GetSetRegionOrMarkerInfo_String.is_some() {
+            loaded_count += 1;
+        }
+        if pointers.AdvancePlaybackPosition.is_some() {
+            loaded_count += 1;
+        }
+        if pointers.GetPlayLoopCnt.is_some() {
             loaded_count += 1;
         }
         pointers.loaded_count = loaded_count;
@@ -19777,43 +19817,6 @@ impl Reaper {
     #[doc = r" # Safety"]
     #[doc = r""]
     #[doc = r" REAPER can crash if you pass an invalid pointer."]
-    pub unsafe fn AdvancePlaybackPosition(
-        &self,
-        __proj: *mut root::ReaProject,
-        opos: f64,
-        npos: *mut f64,
-        loopcnt: *mut ::std::os::raw::c_longlong,
-        srate: f64,
-        max_spls: *mut ::std::os::raw::c_int,
-        sf: *mut ::std::os::raw::c_int,
-    ) -> ::std::os::raw::c_int {
-        match self.pointers.AdvancePlaybackPosition {
-            None => panic!(
-                "Attempt to use a function that has not been loaded: {}",
-                stringify!(AdvancePlaybackPosition)
-            ),
-            Some(f) => f(__proj, opos, npos, loopcnt, srate, max_spls, sf),
-        }
-    }
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" REAPER can crash if you pass an invalid pointer."]
-    pub unsafe fn GetPlayLoopCnt(
-        &self,
-        __proj: *mut root::ReaProject,
-        something: *mut ::std::os::raw::c_void,
-    ) -> ::std::os::raw::c_longlong {
-        match self.pointers.GetPlayLoopCnt {
-            None => panic!(
-                "Attempt to use a function that has not been loaded: {}",
-                stringify!(GetPlayLoopCnt)
-            ),
-            Some(f) => f(__proj, something),
-        }
-    }
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" REAPER can crash if you pass an invalid pointer."]
     pub unsafe fn InitializeCoolSB(&self, hwnd: root::HWND) -> root::BOOL {
         match self.pointers.InitializeCoolSB {
             None => panic!(
@@ -19971,6 +19974,153 @@ impl Reaper {
                 stringify!(CoolSB_SetThemeIndex)
             ),
             Some(f) => f(hwnd, idx),
+        }
+    }
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" REAPER can crash if you pass an invalid pointer."]
+    pub unsafe fn GetNumRegionsOrMarkers(
+        &self,
+        proj: *mut root::ReaProject,
+    ) -> ::std::os::raw::c_int {
+        match self.pointers.GetNumRegionsOrMarkers {
+            None => panic!(
+                "Attempt to use a function that has not been loaded: {}",
+                stringify!(GetNumRegionsOrMarkers)
+            ),
+            Some(f) => f(proj),
+        }
+    }
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" REAPER can crash if you pass an invalid pointer."]
+    pub unsafe fn GetRegionOrMarker(
+        &self,
+        proj: *mut root::ReaProject,
+        index: ::std::os::raw::c_int,
+        guidStr: *const ::std::os::raw::c_char,
+    ) -> *mut root::ProjectMarker {
+        match self.pointers.GetRegionOrMarker {
+            None => panic!(
+                "Attempt to use a function that has not been loaded: {}",
+                stringify!(GetRegionOrMarker)
+            ),
+            Some(f) => f(proj, index, guidStr),
+        }
+    }
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" REAPER can crash if you pass an invalid pointer."]
+    pub unsafe fn GetRegionOrMarkerInfo_Value(
+        &self,
+        proj: *mut root::ReaProject,
+        regionOrMarker: *mut root::ProjectMarker,
+        parameterName: *const ::std::os::raw::c_char,
+    ) -> f64 {
+        match self.pointers.GetRegionOrMarkerInfo_Value {
+            None => panic!(
+                "Attempt to use a function that has not been loaded: {}",
+                stringify!(GetRegionOrMarkerInfo_Value)
+            ),
+            Some(f) => f(proj, regionOrMarker, parameterName),
+        }
+    }
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" REAPER can crash if you pass an invalid pointer."]
+    pub unsafe fn SetRegionOrMarkerInfo_Value(
+        &self,
+        proj: *mut root::ReaProject,
+        regionOrMarker: *mut root::ProjectMarker,
+        parameterName: *const ::std::os::raw::c_char,
+        setNewValue: f64,
+    ) -> f64 {
+        match self.pointers.SetRegionOrMarkerInfo_Value {
+            None => panic!(
+                "Attempt to use a function that has not been loaded: {}",
+                stringify!(SetRegionOrMarkerInfo_Value)
+            ),
+            Some(f) => f(proj, regionOrMarker, parameterName, setNewValue),
+        }
+    }
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" REAPER can crash if you pass an invalid pointer."]
+    pub unsafe fn GetSetRegionOrMarkerInfo(
+        &self,
+        proj: *mut root::ReaProject,
+        regionOrMarker: *mut root::ProjectMarker,
+        parameterName: *const ::std::os::raw::c_char,
+        setNewValue: *mut ::std::os::raw::c_void,
+    ) -> *mut ::std::os::raw::c_void {
+        match self.pointers.GetSetRegionOrMarkerInfo {
+            None => panic!(
+                "Attempt to use a function that has not been loaded: {}",
+                stringify!(GetSetRegionOrMarkerInfo)
+            ),
+            Some(f) => f(proj, regionOrMarker, parameterName, setNewValue),
+        }
+    }
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" REAPER can crash if you pass an invalid pointer."]
+    pub unsafe fn GetSetRegionOrMarkerInfo_String(
+        &self,
+        proj: *mut root::ReaProject,
+        regionOrMarker: *mut root::ProjectMarker,
+        parameterName: *const ::std::os::raw::c_char,
+        stringNeedBig: *mut ::std::os::raw::c_char,
+        setNewValue: bool,
+    ) -> bool {
+        match self.pointers.GetSetRegionOrMarkerInfo_String {
+            None => panic!(
+                "Attempt to use a function that has not been loaded: {}",
+                stringify!(GetSetRegionOrMarkerInfo_String)
+            ),
+            Some(f) => f(
+                proj,
+                regionOrMarker,
+                parameterName,
+                stringNeedBig,
+                setNewValue,
+            ),
+        }
+    }
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" REAPER can crash if you pass an invalid pointer."]
+    pub unsafe fn AdvancePlaybackPosition(
+        &self,
+        __proj: *mut root::ReaProject,
+        opos: f64,
+        npos: *mut f64,
+        loopcnt: *mut ::std::os::raw::c_longlong,
+        srate: f64,
+        max_spls: *mut ::std::os::raw::c_int,
+        sf: *mut ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int {
+        match self.pointers.AdvancePlaybackPosition {
+            None => panic!(
+                "Attempt to use a function that has not been loaded: {}",
+                stringify!(AdvancePlaybackPosition)
+            ),
+            Some(f) => f(__proj, opos, npos, loopcnt, srate, max_spls, sf),
+        }
+    }
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" REAPER can crash if you pass an invalid pointer."]
+    pub unsafe fn GetPlayLoopCnt(
+        &self,
+        proj: *mut root::ReaProject,
+        render_skip_loopcnt: *mut ::std::os::raw::c_longlong,
+    ) -> ::std::os::raw::c_longlong {
+        match self.pointers.GetPlayLoopCnt {
+            None => panic!(
+                "Attempt to use a function that has not been loaded: {}",
+                stringify!(GetPlayLoopCnt)
+            ),
+            Some(f) => f(proj, render_skip_loopcnt),
         }
     }
 }
@@ -24696,23 +24846,6 @@ pub struct ReaperFunctionPointers {
             iconFnOutOptional: *mut *const ::std::os::raw::c_char,
         ) -> bool,
     >,
-    pub AdvancePlaybackPosition: Option<
-        unsafe extern "C" fn(
-            __proj: *mut root::ReaProject,
-            opos: f64,
-            npos: *mut f64,
-            loopcnt: *mut ::std::os::raw::c_longlong,
-            srate: f64,
-            max_spls: *mut ::std::os::raw::c_int,
-            sf: *mut ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >,
-    pub GetPlayLoopCnt: Option<
-        unsafe extern "C" fn(
-            __proj: *mut root::ReaProject,
-            something: *mut ::std::os::raw::c_void,
-        ) -> ::std::os::raw::c_longlong,
-    >,
     pub InitializeCoolSB: Option<unsafe extern "system" fn(hwnd: root::HWND) -> root::BOOL>,
     pub UninitializeCoolSB: Option<unsafe extern "system" fn(hwnd: root::HWND) -> root::HRESULT>,
     pub CoolSB_SetMinThumbSize: Option<
@@ -24766,7 +24899,65 @@ pub struct ReaperFunctionPointers {
     pub CoolSB_SetThemeIndex: Option<
         unsafe extern "system" fn(hwnd: root::HWND, idx: ::std::os::raw::c_int) -> root::BOOL,
     >,
+    pub GetNumRegionsOrMarkers:
+        Option<unsafe extern "C" fn(proj: *mut root::ReaProject) -> ::std::os::raw::c_int>,
+    pub GetRegionOrMarker: Option<
+        unsafe extern "C" fn(
+            proj: *mut root::ReaProject,
+            index: ::std::os::raw::c_int,
+            guidStr: *const ::std::os::raw::c_char,
+        ) -> *mut root::ProjectMarker,
+    >,
+    pub GetRegionOrMarkerInfo_Value: Option<
+        unsafe extern "C" fn(
+            proj: *mut root::ReaProject,
+            regionOrMarker: *mut root::ProjectMarker,
+            parameterName: *const ::std::os::raw::c_char,
+        ) -> f64,
+    >,
+    pub SetRegionOrMarkerInfo_Value: Option<
+        unsafe extern "C" fn(
+            proj: *mut root::ReaProject,
+            regionOrMarker: *mut root::ProjectMarker,
+            parameterName: *const ::std::os::raw::c_char,
+            setNewValue: f64,
+        ) -> f64,
+    >,
+    pub GetSetRegionOrMarkerInfo: Option<
+        unsafe extern "C" fn(
+            proj: *mut root::ReaProject,
+            regionOrMarker: *mut root::ProjectMarker,
+            parameterName: *const ::std::os::raw::c_char,
+            setNewValue: *mut ::std::os::raw::c_void,
+        ) -> *mut ::std::os::raw::c_void,
+    >,
+    pub GetSetRegionOrMarkerInfo_String: Option<
+        unsafe extern "C" fn(
+            proj: *mut root::ReaProject,
+            regionOrMarker: *mut root::ProjectMarker,
+            parameterName: *const ::std::os::raw::c_char,
+            stringNeedBig: *mut ::std::os::raw::c_char,
+            setNewValue: bool,
+        ) -> bool,
+    >,
+    pub AdvancePlaybackPosition: Option<
+        unsafe extern "C" fn(
+            __proj: *mut root::ReaProject,
+            opos: f64,
+            npos: *mut f64,
+            loopcnt: *mut ::std::os::raw::c_longlong,
+            srate: f64,
+            max_spls: *mut ::std::os::raw::c_int,
+            sf: *mut ::std::os::raw::c_int,
+        ) -> ::std::os::raw::c_int,
+    >,
+    pub GetPlayLoopCnt: Option<
+        unsafe extern "C" fn(
+            proj: *mut root::ReaProject,
+            render_skip_loopcnt: *mut ::std::os::raw::c_longlong,
+        ) -> ::std::os::raw::c_longlong,
+    >,
 }
 impl ReaperFunctionPointers {
-    pub(crate) const TOTAL_COUNT: u32 = 866u32;
+    pub(crate) const TOTAL_COUNT: u32 = 872u32;
 }

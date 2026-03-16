@@ -79,4 +79,3 @@ impl AsRef<raw::custom_action_register_t> for OwnedCustomActionRegister {
         &self.inner
     }
 }
-
