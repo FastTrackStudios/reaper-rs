@@ -848,6 +848,13 @@ pub enum RegistrationObject<'a> {
     /// register("custom_action", custom_action_register_t*) registers a custom action in a specific section.
     /// ```
     CustomAction(Handle<raw::custom_action_register_t>),
+    /// A project import registration for custom file format importers.
+    ///
+    /// Extract from `reaper_plugin.h`:
+    /// ```text
+    /// register with "projectimport"
+    /// ```
+    ProjectImport(Handle<raw::project_import_register_t>),
     /// If a variant is missing in this enum, you can use this custom one as a resort.
     ///
     /// Use [`custom()`] to create this variant.
@@ -991,6 +998,10 @@ impl<'a> RegistrationObject<'a> {
             },
             CustomAction(reg) => PluginRegistration {
                 key: reaper_str!("custom_action").into(),
+                value: reg.as_ptr() as _,
+            },
+            ProjectImport(reg) => PluginRegistration {
+                key: reaper_str!("projectimport").into(),
                 value: reg.as_ptr() as _,
             },
             Custom(key, value) => PluginRegistration {

@@ -14,7 +14,8 @@ use crate::{
     FileInProjectCallback, GenericRegistrationHandle, Handle, HookCommand, HookCommand2,
     HookCustomMenu, HookPostCommand, HookPostCommand2, HwndInfo, MainThreadScope, MeasureAlignment,
     OnAudioBuffer, OwnedAcceleratorRegister, OwnedAudioHookRegister, OwnedCustomActionRegister,
-    OwnedGaccelRegister, OwnedPreviewRegister, PluginRegistration, ProjectContext, ReaProject,
+    OwnedGaccelRegister, OwnedPreviewRegister, OwnedProjectImportRegister, PluginRegistration,
+    ProjectContext, ReaProject,
     RealTimeAudioThreadScope, Reaper, ReaperFunctionError, ReaperFunctionResult, ReaperMutex,
     ReaperString, ReaperStringArg, RegistrationHandle, RegistrationObject, ToggleAction,
     ToolbarIconMap, TranslateAccel,
@@ -75,6 +76,8 @@ pub struct ReaperSession {
     accelerator_registers: Keeper<OwnedAcceleratorRegister, raw::accelerator_register_t>,
     /// Provides a safe place in memory for custom action registers.
     custom_action_registers: Keeper<OwnedCustomActionRegister, raw::custom_action_register_t>,
+    /// Provides a safe place in memory for project import registers.
+    project_import_registers: Keeper<OwnedProjectImportRegister, raw::project_import_register_t>,
     /// Provides a safe place in memory for file-in-project hooks.
     file_in_project_hooks: SimpleKeeper<OwnedFileInProjectHook>,
     /// Provides a safe place in memory for currently playing preview registers.
@@ -123,6 +126,7 @@ impl ReaperSession {
             gaccel_registers: Default::default(),
             accelerator_registers: Default::default(),
             custom_action_registers: Default::default(),
+            project_import_registers: Default::default(),
             file_in_project_hooks: Default::default(),
             preview_registers: Default::default(),
             command_names: Default::default(),
@@ -1367,6 +1371,33 @@ impl ReaperSession {
         handle: Handle<raw::custom_action_register_t>,
     ) {
         unsafe { self.plugin_register_remove(RegistrationObject::CustomAction(handle)) };
+    }
+
+    /// Registers a project import handler for custom file format importers.
+    ///
+    /// This function takes ownership of the passed struct in order to take complete care of it.
+    /// Compared to the alternative of taking a reference or pointer, that releases the API
+    /// consumer from the responsibilities to guarantee a long enough lifetime and to maintain a
+    /// stable address in memory.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the registration failed.
+    pub fn plugin_register_add_project_import(
+        &mut self,
+        register: OwnedProjectImportRegister,
+    ) -> ReaperFunctionResult<Handle<raw::project_import_register_t>> {
+        let handle = self.project_import_registers.keep(register);
+        unsafe { self.plugin_register_add(RegistrationObject::ProjectImport(handle))? };
+        Ok(handle)
+    }
+
+    /// Unregisters a project import handler.
+    pub fn plugin_register_remove_project_import(
+        &mut self,
+        handle: Handle<raw::project_import_register_t>,
+    ) {
+        unsafe { self.plugin_register_remove(RegistrationObject::ProjectImport(handle)) };
     }
 }
 

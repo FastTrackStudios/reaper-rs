@@ -353,6 +353,9 @@ pub use gaccel_register::*;
 mod custom_action_register;
 pub use custom_action_register::*;
 
+mod project_import_register;
+pub use project_import_register::*;
+
 mod accelerator_register;
 pub use accelerator_register::*;
 

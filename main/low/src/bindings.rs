@@ -1291,6 +1291,30 @@ pub mod root {
     pub type gaccel_register_t = root::_REAPER_gaccel_register_t;
     #[repr(C)]
     #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+    pub struct project_import_register_t {
+        pub WantProjectFile: ::std::option::Option<
+            unsafe extern "C" fn(fn_: *const ::std::os::raw::c_char) -> bool,
+        >,
+        pub EnumFileExtensions: ::std::option::Option<
+            unsafe extern "C" fn(
+                i: ::std::os::raw::c_int,
+                descptr: *mut *mut ::std::os::raw::c_char,
+            ) -> *const ::std::os::raw::c_char,
+        >,
+        pub LoadProject: ::std::option::Option<
+            unsafe extern "C" fn(
+                fn_: *const ::std::os::raw::c_char,
+                genstate: *mut root::ProjectStateContext,
+            ) -> ::std::os::raw::c_int,
+        >,
+    }
+    impl Default for project_import_register_t {
+        fn default() -> Self {
+            unsafe { ::std::mem::zeroed() }
+        }
+    }
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
     pub struct audio_hook_register_t {
         pub OnAudioBuffer: ::std::option::Option<
             unsafe extern "C" fn(
