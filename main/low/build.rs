@@ -322,6 +322,8 @@ mod codegen {
             // # wingdi.h
             "BitBlt",
             "StretchBlt",
+            "StretchBltFromMem",
+            "SWELL_SetClassName",
             "CreateSolidBrush",
             "DeleteObject",
             "GetStockObject",
