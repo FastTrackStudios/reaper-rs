@@ -8,11 +8,16 @@ use std::os::raw::c_void;
 use std::ptr::NonNull;
 
 impl raw::ProjectStateContext {
-    /// Attention: Not really usable yet due to the lack of the variadic parameter in AddLine.
+    /// Add a single line to the project state context.
+    ///
+    /// REAPER's underlying `ProjectStateContext::AddLine` is printf-style;
+    /// the C++ shim issues it as `self->AddLine("%s", line)` so any `%`
+    /// in `line` is treated as a literal character and there are no
+    /// variadic arguments to interpret.
     ///
     /// # Safety
     ///
-    /// REAPER can crash if you pass an invalid pointer.
+    /// REAPER can crash if you pass an invalid pointer or a non-NUL-terminated string.
     pub unsafe fn AddLine(&mut self, line: *const ::std::os::raw::c_char) {
         rust_to_cpp_ProjectStateContext_AddLine(self as *const _ as _, line);
     }
@@ -45,7 +50,9 @@ impl raw::ProjectStateContext {
 ///
 /// An implementation of this trait can be passed to [`create_cpp_to_rust_project_state_context()`].
 ///
-/// Attention: Not really usable yet due to the lack of the variadic parameter in AddLine.
+/// The C++ shim issues `AddLine` as `self->AddLine("%s", line)`, so trait
+/// implementors receive the raw line verbatim — no printf interpretation
+/// or variadic plumbing required.
 ///
 /// [`create_cpp_to_rust_project_state_context()`]: fn.create_cpp_to_rust_project_state_context.html
 pub trait ProjectStateContext {

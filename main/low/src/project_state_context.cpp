@@ -2,9 +2,20 @@
 
 namespace reaper_project_state_context {
   // Rust -> C++
+  //
+  // ProjectStateContext::AddLine is printf-style (declared `__attribute__
+  // ((format (printf,2,3)))` on GCC), so passing a raw line as the format
+  // string interprets any `%…` in the content as format specifiers — and
+  // crashes when there's no matching variadic argument.
+  //
+  // WDL's projectcontext.cpp has a fast path: when the format string is
+  // *exactly* `"%s"`, it reads a single `const char*` argument and uses
+  // it directly (with newline filtering). That's a stable two-argument
+  // call we can issue from Rust without variadic support.
   void rust_to_cpp_ProjectStateContext_AddLine(ProjectStateContext* self, const char* line) {
-    // TODO-high This can't work. Wait for variadics support in stable Rust.
-//    self->AddLine(line);
+    if (self && line) {
+      self->AddLine("%s", line);
+    }
   }
   int rust_to_cpp_ProjectStateContext_GetLine(ProjectStateContext* self, char* buf, int buflen) {
     return self->GetLine(buf, buflen);
